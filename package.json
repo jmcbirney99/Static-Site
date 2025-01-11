@@ -5,7 +5,7 @@
   "main": "build.js",
   "scripts": {
     "build": "node build.js",
-    "serve": "node -e \"require('http').createServer((req, res) => require('fs').readFile('public' + (req.url === '/' ? '/index.html' : req.url), (err, data) => { if (err) { res.writeHead(404); res.end(); } else { res.writeHead(200); res.end(data); } })).listen(3000);\""
+    "serve": "node server.js"
   },
   "dependencies": {
     "fs-extra": "^10.1.0",

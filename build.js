@@ -9,27 +9,58 @@ async function readTemplate(templateName) {
 }
 
 // Function to process markdown file
-async function processMarkdown(filePath, template) {
-    const markdown = await fs.readFile(filePath, 'utf8');
-    const content = marked.parse(markdown);
-    const title = markdown.split('\n')[0].replace('# ', '');
-    
-    return template
-        .replace('{{title}}', title)
-        .replace('{{content}}', content);
+async function processMarkdown(filePath, template, options = {}) {
+    try {
+        const markdown = await fs.readFile(filePath, 'utf8');
+        console.log(`Processing ${filePath}...`);
+        const content = marked.parse(markdown);
+        const title = markdown.split('\n')[0].replace('# ', '');
+        
+        let html = template
+            .replace('{{title}}', title)
+            .replace('{{content}}', content);
+            
+        // Handle active states in navigation
+        const page = options.page || '';
+        html = html
+            .replace(`{{#is_${page}}}active{{/is_${page}}}`, 'active')
+            .replace(/{{#is_\w+}}active{{\/is_\w+}}/g, '');
+        
+        return html;
+    } catch (error) {
+        console.error(`Error processing ${filePath}:`, error);
+        throw error;
+    }
 }
 
 // Function to process blog posts
 async function processBlogPost(filePath, template) {
-    const markdown = await fs.readFile(filePath, 'utf8');
-    const [frontMatter, ...contentParts] = markdown.split('---\n');
-    const metadata = yaml.load(frontMatter);
-    const content = marked.parse(contentParts.join('---\n'));
-    
-    return template
-        .replace('{{title}}', metadata.title)
-        .replace('{{date}}', metadata.date)
-        .replace('{{content}}', content);
+    try {
+        const markdown = await fs.readFile(filePath, 'utf8');
+        const parts = markdown.split('---\n');
+        
+        // Ensure we have valid front matter
+        if (parts.length < 3) {
+            console.warn(`Warning: Invalid front matter in ${filePath}, skipping file`);
+            return null;
+        }
+        
+        const metadata = yaml.load(parts[1]); // Load the content between the first two '---'
+        const content = marked.parse(parts.slice(2).join('---\n')); // Join the rest as content
+        
+        if (!metadata || !metadata.title || !metadata.date) {
+            console.warn(`Warning: Missing required front matter (title or date) in ${filePath}, skipping file`);
+            return null;
+        }
+        
+        return template
+            .replace('{{title}}', metadata.title)
+            .replace('{{date}}', metadata.date)
+            .replace('{{content}}', content);
+    } catch (error) {
+        console.warn(`Warning: Error processing ${filePath}: ${error.message}`);
+        return null;
+    }
 }
 
 // Main build function
@@ -45,11 +76,12 @@ async function build() {
     const mainTemplate = await readTemplate('main.html');
     
     // Process markdown pages
-    const pages = ['index', 'about', 'contact'];
+    const pages = ['index', 'about', 'contact', 'blog'];
     for (const page of pages) {
         const html = await processMarkdown(
             `src/pages/${page}.md`,
-            mainTemplate
+            mainTemplate,
+            { page: page === 'index' ? 'home' : page }
         );
         await fs.outputFile(`public/${page}.html`, html);
     }
@@ -58,14 +90,19 @@ async function build() {
     const blogTemplate = await readTemplate('blog-post.html');
     const blogPosts = await fs.readdir('src/pages/blog');
     
+    // Ensure blog directory exists
+    await fs.ensureDir('public/blog');
+    
     for (const post of blogPosts) {
         if (post.endsWith('.md')) {
             const html = await processBlogPost(
                 `src/pages/blog/${post}`,
                 blogTemplate
             );
-            const outputPath = `public/blog/${post.replace('.md', '.html')}`;
-            await fs.outputFile(outputPath, html);
+            if (html) {  // Only write file if processing was successful
+                const outputPath = `public/blog/${post.replace('.md', '.html')}`;
+                await fs.outputFile(outputPath, html);
+            }
         }
     }
 }
