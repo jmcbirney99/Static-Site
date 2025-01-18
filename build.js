@@ -76,7 +76,7 @@ async function build() {
     const mainTemplate = await readTemplate('main.html');
     
     // Process markdown pages
-    const pages = ['index', 'about', 'contact', 'blog'];
+    const pages = ['index', 'about', 'contact', 'blog', 'how-it-works'];
     for (const page of pages) {
         const html = await processMarkdown(
             `src/pages/${page}.md`,
