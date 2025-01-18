@@ -5,17 +5,25 @@
   "main": "build.js",
   "scripts": {
     "build": "node build.js",
-    "serve": "http-server public -p 3000"
+    "serve": "http-server public -p 3000",
+    "api": "node api/server.js",
+    "dev": "npm run build && concurrently \"npm run serve\" \"npm run api\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.33.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "fs-extra": "^10.1.0",
     "js-yaml": "^4.1.0",
-    "marked": "^4.3.0"
+    "marked": "^4.3.0",
+    "openai": "^4.79.1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "http-server": "^14.1.1"
   }
 }
