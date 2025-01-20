@@ -66,6 +66,34 @@ This project is being developed in multiple phases:
 3. **View the Site**
    - Open http://localhost:3000 in your browser
 
+## GitHub Workflow
+
+1. **Check Status**
+   ```bash
+   git status
+   ```
+   This shows which files have been modified.
+
+2. **Stage Changes**
+   ```bash
+   # Stage specific files
+   git add filename1 filename2
+
+   # Or stage all changes
+   git add .
+   ```
+
+3. **Commit Changes**
+   ```bash
+   git commit -m "Brief description of your changes"
+   ```
+
+4. **Push to GitHub**
+   ```bash
+   git push
+   ```
+   This updates the remote repository with your local changes.
+
 ## Future Development
 
 - Integration with AI services (OpenAI, Anthropic)
