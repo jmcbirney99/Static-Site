@@ -5,8 +5,8 @@ const path = require('path');
 const server = http.createServer((req, res) => {
     let filePath = req.url === '/' ? '/index.html' : req.url;
     
-    // Add .html extension if not a resource file
-    if (!filePath.endsWith('.html') && !filePath.endsWith('.css') && !filePath.endsWith('.js')) {
+    // Add .html extension if not a resource file and doesn't already end in .html
+    if (!path.extname(filePath) || (!filePath.endsWith('.html') && !filePath.match(/\.(css|js)$/))) {
         filePath += '.html';
     }
 

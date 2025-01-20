@@ -53,10 +53,17 @@ async function processBlogPost(filePath, template) {
             return null;
         }
         
-        return template
+        let html = template
             .replace('{{title}}', metadata.title)
             .replace('{{date}}', metadata.date)
             .replace('{{content}}', content);
+            
+        // Handle active states in navigation
+        html = html
+            .replace('{{#is_blog}}active{{/is_blog}}', 'active')
+            .replace(/{{#is_\w+}}active{{\/is_\w+}}/g, '');
+        
+        return html;
     } catch (error) {
         console.warn(`Warning: Error processing ${filePath}: ${error.message}`);
         return null;
@@ -75,33 +82,39 @@ async function build() {
     // Read main template
     const mainTemplate = await readTemplate('main.html');
     
-    // Process markdown pages
+    // Process regular pages
     const pages = ['index', 'about', 'contact', 'blog', 'how-it-works'];
     for (const page of pages) {
         const html = await processMarkdown(
             `src/pages/${page}.md`,
             mainTemplate,
-            { page: page === 'index' ? 'home' : page }
+            { [`is_${page === 'index' ? 'home' : page}`]: true }
         );
-        await fs.outputFile(`public/${page}.html`, html);
+        if (page === 'blog') {
+            // Write blog.md output to /blog/index.html
+            await fs.outputFile('public/blog/index.html', html);
+        } else {
+            await fs.outputFile(`public/${page}.html`, html);
+        }
     }
     
     // Process blog posts
     const blogTemplate = await readTemplate('blog-post.html');
     const blogPosts = await fs.readdir('src/pages/blog');
     
-    // Ensure blog directory exists
+    // Create blog directory
     await fs.ensureDir('public/blog');
     
+    // Process each blog post
     for (const post of blogPosts) {
         if (post.endsWith('.md')) {
+            const postName = post.replace('.md', '');
             const html = await processBlogPost(
                 `src/pages/blog/${post}`,
-                blogTemplate
+                mainTemplate
             );
-            if (html) {  // Only write file if processing was successful
-                const outputPath = `public/blog/${post.replace('.md', '.html')}`;
-                await fs.outputFile(outputPath, html);
+            if (html) {
+                await fs.outputFile(`public/blog/${postName}.html`, html);
             }
         }
     }

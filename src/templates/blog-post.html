@@ -8,17 +8,20 @@
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="nav-container">
+            <nav>
+                <ul>
+                    <li><a href="/" class="{{#is_home}}active{{/is_home}}">Home</a></li>
+                    <li><a href="/about" class="{{#is_about}}active{{/is_about}}">About</a></li>
+                    <li><a href="/blog" class="{{#is_blog}}active{{/is_blog}}">Blog</a></li>
+                    <li><a href="/contact" class="{{#is_contact}}active{{/is_contact}}">Contact</a></li>
+                    <li><a href="/how-it-works" class="{{#is_how-it-works}}active{{/is_how-it-works}}">How It Works</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <main class="blog-post">
+    <main>
         <article>
             <header>
                 <h1>{{title}}</h1>
