@@ -34,10 +34,13 @@ header {
     background: var(--nav-bg);
     border-right: 1px solid var(--border-color);
     padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav-container {
     padding: 0 1rem;
+    flex: 1;
 }
 
 nav ul {
@@ -66,6 +69,79 @@ nav a:hover {
 nav a.active {
     background-color: #e5e7eb40;
     color: var(--primary-color);
+}
+
+/* Newsletter styles */
+.nav-footer {
+    padding: 1rem;
+    margin-top: auto;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Form container spacing */
+.formkit-form[data-uid="328d8e6086"] {
+    width: 100%;
+}
+
+.formkit-form[data-uid="328d8e6086"] [data-style="clean"] {
+    width: 100%;
+}
+
+.formkit-form[data-uid="328d8e6086"] .formkit-fields {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.formkit-form[data-uid="328d8e6086"] .formkit-field {
+    width: 100%;
+}
+
+.formkit-form[data-uid="328d8e6086"] .formkit-submit {
+    width: 100%;
+    background-color: #faa635 !important;
+    border: none !important;
+    color: #fff !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.formkit-form[data-uid="328d8e6086"] .formkit-input {
+    width: 100% !important;
+    padding: 0.5rem !important;
+    border-radius: 4px !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+/* Tagline styling */
+.newsletter-tagline {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center !important;
+    margin: 0.5rem 0 1rem !important;
+    line-height: 1.4;
+    width: 100%;
+}
+
+.copyright {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+}
+
+/* Hide any ConvertKit branding */
+.formkit-powered-by-convertkit-container {
+    display: none !important;
 }
 
 /* Main content */
@@ -115,16 +191,36 @@ li {
 
 /* Footer */
 footer {
-    margin-left: var(--nav-width);
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 4rem;
+    display: none;
 }
 
-footer p {
-    font-size: 0.75rem;
-    color: #9ca3af;
-    margin: 0;
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.footer-left {
+    flex: 1;
+}
+
+.footer-right {
+    flex: 1;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .footer-right {
+        text-align: center;
+    }
 } 
